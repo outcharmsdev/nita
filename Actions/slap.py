@@ -1,31 +1,16 @@
-# Import Python Modules
 import discord
 from discord.ext import commands
-import random
-
-# Import Data
-from DataFiles import Actions_data, embedColors
 
 class slap(commands.Cog):
-    
     def __init__(self, client):
         self.client = client
 
+    @commands.command(name="slap")
+    async def slap(self, ctx, member: discord.Member = None):
+        if member is None:
+            await ctx.send("Você precisa mencionar alguém!")
+            return
+        await ctx.send(f"{ctx.author.mention} deu um tapa em {member.mention} ☠️")
 
-    # punch commands
-    @commands.command()
-    async def slap(self, ctx, user: discord.User = 'none'):
-        if user=='none' or user==ctx.author.name:
-            embed=discord.Embed(title=ctx.author.name+' has slapped themselves', description='Somebody help them...', color=random.choice(embedColors.colorList))
-            embed.set_image(url= f'{random.choice(Actions_data.slapself_gif_replies)}')
-            await ctx.send(embed=embed)
-
-
-        else:
-	        embed=discord.Embed(title=ctx.author.name+' has slapped '+user.name, color=random.choice(embedColors.colorList))
-	        embed.set_image(url= f'{random.choice(Actions_data.slap_gif_replies)}')
-	        await ctx.send(embed=embed)
-
-
-def setup(client):
-    client.add_cog(slap(client))
+async def setup(client):
+    await client.add_cog(slap(client))
