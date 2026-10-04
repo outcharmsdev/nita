@@ -1,45 +1,26 @@
-# Import Python Modules
 import discord
-from discord import client
+from discord import app_commands
 from discord.ext import commands
 import random
 
-# Import Data
-from DataFiles import Actions_data, embedColors
-
-class Kick(commands.Cog):
-    
+class kick(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    @app_commands.command(name="chute", description="Dá um chute em alguém")
+    @app_commands.describe(member="Quem vai levar o chute")
+    async def chute(self, interaction: discord.Interaction, member: discord.Member):
+        gifs = [
+            "https://media.tenor.com/7y9F3V8k5xAAAAAC/anime-kick.gif",
+            "https://media.tenor.com/2x4c6v8b1nAAAAAC/kick-anime.gif",
+            "https://media.tenor.com/5p7q9r2s4tAAAAAC/anime-kick.gif",
+        ]
+        embed = discord.Embed(
+            description=f"{interaction.user.mention} deu um chute em {member.mention} 🦵",
+            color=0xFFA500
+        )
+        embed.set_image(url=random.choice(gifs))
+        await interaction.response.send_message(embed=embed)
 
-    # Kick commands
-    @commands.command()
-    async def kick(self, ctx, user: discord.User = 'none'):
-        if user=='none':
-            await ctx.send(f'Who are you kicking? dummy...\n`{self.client.command_prefix}kick <mention user>`')
-
-        else:
-            if ctx.author == user:
-                embed=discord.Embed(title=ctx.author.name+' You can\'t kick yourself... lol', color=random.choice(embedColors.colorList))
-                await ctx.send(embed=embed)
-            
-            else:
-                kick_type = random.choice(Actions_data.chances)
-
-                if kick_type in [9, 10]:
-                    output = random.choice(Actions_data.kickmiss_gif_replies)
-
-                    embed=discord.Embed(title=ctx.author.name+' tried to kick '+user.name+', but they dodged it', color=random.choice(embedColors.colorList))
-                    embed.set_image(url= output)
-            
-                else:
-                    output = random.choice(Actions_data.kick_gif_replies)
-                    embed=discord.Embed(title=ctx.author.name+' has kicked '+user.name, color=random.choice(embedColors.colorList))
-                    embed.set_image(url= output)
-
-            await ctx.send(embed=embed)
-
-
-def setup(client):
-    client.add_cog(Kick(client))
+async def setup(client):
+    await client.add_cog(kick(client))
