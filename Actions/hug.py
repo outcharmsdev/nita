@@ -1,32 +1,26 @@
-# Import Python Modules
 import discord
+from discord import app_commands
 from discord.ext import commands
 import random
 
-# Import Data
-from DataFiles import Actions_data, embedColors
-
 class hug(commands.Cog):
-    
     def __init__(self, client):
         self.client = client
 
+    @app_commands.command(name="abraco", description="Dá um abraço em alguém")
+    @app_commands.describe(member="Quem vai receber o abraço")
+    async def abraco(self, interaction: discord.Interaction, member: discord.Member):
+        gifs = [
+            "https://media.tenor.com/1Tl0G5cG8sAAAAAC/anime-hug.gif",
+            "https://media.tenor.com/9k8zF3J7m6AAAAAC/anime-hug.gif",
+            "https://media.tenor.com/8fV6y8h9x4AAAAAC/hug-anime.gif",
+        ]
+        embed = discord.Embed(
+            description=f"{interaction.user.mention} deu um abraço apertado em {member.mention} 🫂",
+            color=0xFF69B4
+        )
+        embed.set_image(url=random.choice(gifs))
+        await interaction.response.send_message(embed=embed)
 
-    # hug commands
-    @commands.command()
-    async def hug(self, ctx, user: discord.User = 'none'):
-        if user=='none':
-            await ctx.send('Who are you hugging dummy? lol')
-
-        elif ctx.author == user:
-            embed=discord.Embed(title=ctx.author.name+' needs a hug, they\'re trynna hug themselves', color=random.choice(embedColors.colorList))
-            await ctx.send(embed=embed)
-
-        else:
-	        embed=discord.Embed(title=ctx.author.name+' has hugged '+user.name, color=random.choice(embedColors.colorList))
-	        embed.set_image(url= f'{random.choice(Actions_data.hug_gif_replies)}')
-	        await ctx.send(embed=embed)
-
-
-def setup(client):
-    client.add_cog(hug(client))
+async def setup(client):
+    await client.add_cog(hug(client))
