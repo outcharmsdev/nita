@@ -1,35 +1,26 @@
-# Import Python Modules
 import discord
+from discord import app_commands
 from discord.ext import commands
 import random
 
-# Import Data
-from DataFiles import Actions_data, embedColors
-
-class Shoot(commands.Cog):
-    
+class shoot(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    @app_commands.command(name="tiro", description="Atira em alguém")
+    @app_commands.describe(member="Quem vai levar o tiro")
+    async def tiro(self, interaction: discord.Interaction, member: discord.Member):
+        gifs = [
+            "https://media.tenor.com/3x5c7v9b2nAAAAAC/anime-shoot.gif",
+            "https://media.tenor.com/6y8u0i2o4pAAAAAC/gun-anime.gif",
+            "https://media.tenor.com/9a1s3d5f7gAAAAAC/anime-gun.gif",
+        ]
+        embed = discord.Embed(
+            description=f"{interaction.user.mention} atirou em {member.mention} 🔫",
+            color=0x8B0000
+        )
+        embed.set_image(url=random.choice(gifs))
+        await interaction.response.send_message(embed=embed)
 
-    # bonk commands
-    @commands.command()
-    async def shoot(self, ctx, user: discord.User = 'none', *, Text=''):
-        if user=='none':
-            await ctx.send('Shoot who? you started shooting in the air in public and got arrested.')
-
-        elif user==ctx.author:
-            embed=discord.Embed(title= ctx.author.name+' no... you don\'t have to do that... ', description=Text, color=random.choice(embedColors.colorList))
-            embed.set_image(url= f'{random.choice(Actions_data.self_shoot_gif_replies)}')
-            
-            await ctx.send(embed=embed)
-
-        else:
-            username = str(user.name)
-            embed=discord.Embed(title= ctx.author.name+' shot down '+user.name, description=Text, color=random.choice(embedColors.colorList))
-            embed.set_image(url= f'{random.choice(Actions_data.shoot_gif_replies)}')
-            await ctx.send(embed=embed)
-
-
-def setup(client):
-    client.add_cog(Shoot(client))
+async def setup(client):
+    await client.add_cog(shoot(client))
